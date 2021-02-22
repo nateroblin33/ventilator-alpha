@@ -8,6 +8,9 @@
 
 
 #include "_init.h"
+#include "PressureSensors.h"
+#include "Buttons.h"
+#include "LEDs.h"
 
 
 // init main
@@ -31,4 +34,23 @@ void setup()
 }
 
 
-void loop() {}
+void loop() 
+{
+    
+  // read in pressure sensor values
+  int input_pressure = read_pressure(PRESS_I_PIN);
+  int output_pressure = read_pressure(PRESS_O_PIN);
+
+  // check for default setting button pressure
+  int default_selected = -1;
+  if (read_button(DEF0_BUT_PIN)) default_selected = 0;
+  else if (read_button(DEF1_BUT_PIN)) default_selected = 1;
+  else if (read_button(DEF2_BUT_PIN)) default_selected = 2;
+
+  // write to battery status LEDs
+  write_RGB(BATT_R_PIN, BATT_G_PIN, BATT_B_PIN, 0, 255, 0);
+
+  // write to pressure status LEDs
+  write_RGB(PRESS_R_PIN, PRESS_G_PIN, PRESS_B_PIN, 0, 255, 0);
+  
+}
