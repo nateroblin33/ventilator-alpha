@@ -2,7 +2,7 @@
  * Filename: main.ino
  * Author: Kyle Bannerman
  * Date Created: 02/19/2021
- * Date of Last Edit: 02/19/2021
+ * Date of Last Edit: 02/23/2021
  * File Purpose: main controller of arduino
  */
 
@@ -11,6 +11,7 @@
 #include "PressureSensors.h"
 #include "Buttons.h"
 #include "LEDs.h"
+#include "LCDScreen.h"
 
 
 // init main
@@ -31,6 +32,9 @@ void setup()
   pinMode(DEF0_BUT_PIN, INPUT);
   pinMode(DEF1_BUT_PIN, INPUT);
   pinMode(DEF2_BUT_PIN, INPUT);
+
+  // init LCD screen
+  init_screen();
 }
 
 
@@ -38,8 +42,8 @@ void loop()
 {
     
   // read in pressure sensor values
-  int input_pressure = read_pressure(PRESS_I_PIN);
-  int output_pressure = read_pressure(PRESS_O_PIN);
+  float input_pressure = read_pressure(PRESS_I_PIN);
+  float output_pressure = read_pressure(PRESS_O_PIN);
 
   // check for default setting button pressure
   int default_selected = -1;
@@ -52,5 +56,8 @@ void loop()
 
   // write to pressure status LEDs
   write_RGB(PRESS_R_PIN, PRESS_G_PIN, PRESS_B_PIN, 0, 255, 0);
-  
+
+  // write to LCD screen
+  clear_screen();
+  write_pressure_vals(input_pressure, output_pressure);
 }
