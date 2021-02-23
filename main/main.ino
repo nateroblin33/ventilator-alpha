@@ -60,4 +60,6 @@ void loop()
   // write to LCD screen
   clear_screen();
   write_pressure_vals(input_pressure, output_pressure);
+
+  delay(1000);
 }

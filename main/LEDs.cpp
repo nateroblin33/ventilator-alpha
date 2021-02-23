@@ -7,6 +7,9 @@
  */
 
 
+#include "Arduino.h"
+
+
 // write the specified RGB color to the specified LED
 void write_RGB(int red_pin, int green_pin, int blue_pin, 
                int red_value, int green_value, int blue_value)

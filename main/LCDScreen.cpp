@@ -7,6 +7,7 @@
  */
 
 
+#include "Arduino.h"
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 
@@ -17,7 +18,7 @@
 
 
 // define screen
-LiquidCrystal_I2C lcd_screen = LiquidCrystal_I2C(ADRESS, COLS, ROWS);
+LiquidCrystal_I2C lcd_screen = LiquidCrystal_I2C(ADDRESS, COLS, ROWS);
 
 
 // init screen
@@ -31,7 +32,7 @@ void init_screen()
 
 
 // write to screen through serial
-void write_screen(int col, int row, char *msg)
+void write_screen(int col, int row, String msg)
 {
   if (col != -1 && row != -1) lcd_screen.setCursor(col, row);
   lcd_screen.print(msg);
@@ -48,12 +49,15 @@ void clear_screen()
 // write the pressure values to the LCD screen
 void write_pressure_vals(float input_pressure, float output_pressure)
 {
+  char buff[10];
   write_screen(0, 0, "Pressure In ");
-  write_screen(-1, -1, input_pressure);
+  snprintf(buff, sizeof(buff), "%f", input_pressure);
+  write_screen(-1, -1, buff);
   write_screen(-1, -1, " kPa");
   write_screen(0, 1, "Flow In __ m^3/s");
   write_screen(0, 2, "Pressure Out ");
-  write_screen(-1, -1, output_pressure);
+  snprintf(buff, sizeof(buff), "%f", output_pressure);
+  write_screen(-1, -1, buff);
   write_screen(-1, -1, " kPa");
   write_screen(0, 3, "Flow Out __ m^3/s");
 }

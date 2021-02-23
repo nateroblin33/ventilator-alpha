@@ -7,14 +7,10 @@
  */
 
 
-// retrieve voltage values of sensor, converting to pressure
-float read_pressure(int pin)
-{
-  return convert_pressure(analogRead(pin));
-}
+ #include "Arduino.h"
 
 
- // convert voltage to pressure value
+// convert voltage to pressure value
 float convert_pressure(int v)
 {
   float offset = 200.0;
@@ -27,4 +23,8 @@ float convert_pressure(int v)
 }
 
 
-
+// retrieve voltage values of sensor, converting to pressure
+float read_pressure(int pin)
+{
+  return convert_pressure(analogRead(pin));
+}

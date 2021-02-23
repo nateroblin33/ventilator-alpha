@@ -7,11 +7,11 @@
  */
 
 
+ #include "Arduino.h"
+
+
 // retrieve the state of the button from digital read
 bool read_button(int pin)
 {
   return (digitalRead(pin) == HIGH);
 }
-
-
-
