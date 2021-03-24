@@ -18,27 +18,21 @@ from os.path import isfile, join
 '''
 class FlowNode():
 
-
 	def __init__(self):
-		print('create node')
-		
+
 		self.startIdx = None
 
 		self.data = list()
 		self.zeroCount = 0
 
-
 	def setStartIdx(self, idx):
 		self.startIdx = idx
-
 
 	def addData(self, val):
 		self.data.append(val)
 
-
 	def countZero(self):
 		self.zeroCount += 1
-
 
 	def getData(self):
 		return self.data
@@ -105,6 +99,14 @@ class ReadData():
 
 
 	'''
+		Analyze preprocessed nodes
+	'''
+	def analyzeNodes(self):
+		#TODO calc area for total flow and time elapsed
+		pass
+
+
+	'''
 		Read in all data files available
 	'''
 	def readIn(self):
@@ -124,6 +126,8 @@ class ReadData():
 				print('\t[+] Processing data . . . ', end='')
 
 			self.processFrame(df)
+
+			self.analyzeNodes()
 
 			if self.verbose:
 				print('done')
