@@ -11,6 +11,7 @@ import pandas as pd
 import numpy as np
 from os import listdir
 from os.path import isfile, join
+import matplotlib.pyplot as plt
 
 
 '''
@@ -27,6 +28,9 @@ class FlowNode():
 
 	def setStartIdx(self, idx):
 		self.startIdx = idx
+
+	def getStartIdx(self):
+		return self.startIdx
 
 	def addData(self, val):
 		self.data.append(val)
@@ -53,12 +57,15 @@ class ReadData():
 
 		# constants
 		self.THRESHOLD = 0.1
+		self.STEP = 1 / 500
 
 		# accesible types
 		self.data = list()
+		self.stats = list()
 
 		# list only files within a directory and ignore hidden files that begin with '.'
-		self.listNoHidden = lambda path : [entity for entity in listdir(path) if isfile(join(path, entity)) and not entity.startswith('.')]
+		self.listNoHidden = lambda path : [entity for entity in listdir(path) \
+										   if isfile(join(path, entity)) and not entity.startswith('.')]
 
 
 	'''
@@ -93,17 +100,67 @@ class ReadData():
 
 				# node inactive
 				else:
-					self.data.append(currNode.getData())
+					self.data.append((currNode.getStartIdx(), currNode.getData()))
 					currNode = None
 					prevVal = val
+
+
+	'''
+		Calculate area under a node
+	'''
+	def calcArea(self, node):
+
+		area = 0.
+
+		for i in range(len(node) - 1):
+
+			area += self.STEP * (node[i] + node[i + 1]) / 2
+
+		return area
+
 
 
 	'''
 		Analyze preprocessed nodes
 	'''
 	def analyzeNodes(self):
-		#TODO calc area for total flow and time elapsed
-		pass
+
+		self.stats = list()
+
+		for idx, node in self.data:
+
+			if len(self.stats) == 0:
+				self.stats.append([idx * self.STEP, self.calcArea(node), max(node),
+								   len(node) * self.STEP, 0.])
+			else:
+				self.stats.append([idx * self.STEP, self.calcArea(node), max(node),
+								   len(node) * self.STEP, 
+								   idx * self.STEP - self.stats[-1][0]])
+
+		self.stats = pd.DataFrame(data=self.stats, 
+								  columns=['StartTime', 'Volume', 'PeakFlowRate', 'TimeElapsed', 'TimeBetweenFlow'])
+
+
+	'''
+		Print specific stat
+	'''
+	def printStat(self, statStr):
+		print('%s:\n\tMean: %1.5f\tSTD: %1.5f' % (statStr, self.stats[statStr.replace(' ', '')].mean(), 
+												  self.stats[statStr.replace(' ', '')].std()))
+
+	'''
+		Display relevant information about the nodes
+	'''
+	def displayStats(self, filename):
+
+		print('***************\nSTATISTICS: \'%s\'\n***************' % filename)
+
+		print('Node Count: %d' % len(self.stats.index))
+
+		self.printStat('Volume')
+		self.printStat('Peak Flow Rate')
+		self.printStat('Time Elapsed')
+		self.printStat('Time Between Flow')
 
 
 	'''
@@ -114,7 +171,7 @@ class ReadData():
 		for filename in self.listNoHidden(self.inPath):
 
 			if self.verbose:
-				print('Reading data from \'%s\' . . . ' % filename)
+				print('Reading data from \'%s\'' % filename)
 
 			df = pd.read_csv(join(self.inPath, filename), sep='\t')
 
@@ -123,7 +180,7 @@ class ReadData():
 			df.columns = ['FlowRate']
 
 			if self.verbose:
-				print('\t[+] Processing data . . . ', end='')
+				print('\tProcessing data . . . ', end='')
 
 			self.processFrame(df)
 
@@ -132,6 +189,7 @@ class ReadData():
 			if self.verbose:
 				print('done')
 
+			self.displayStats(filename)
 
 
 
