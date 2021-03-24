@@ -14,16 +14,54 @@ from os.path import isfile, join
 
 
 '''
+	Class to store node data
+'''
+class FlowNode():
+
+
+	def __init__(self):
+		print('create node')
+		
+		self.startIdx = None
+
+		self.data = list()
+		self.zeroCount = 0
+
+
+	def setStartIdx(self, idx):
+		self.startIdx = idx
+
+
+	def addData(self, val):
+		self.data.append(val)
+
+
+	def countZero(self):
+		self.zeroCount += 1
+
+
+	def getData(self):
+		return self.data
+
+
+'''
 	Class to read in .data file format of spirometry data
 '''
 class ReadData():
 
 
 	def __init__(self, inPath='./data', outPath='./output', verbose=True):
-		
+
+		# user input parameters
 		self.inPath = inPath
 		self.outPath = outPath
 		self.verbose = verbose
+
+		# constants
+		self.THRESHOLD = 0.1
+
+		# accesible types
+		self.data = list()
 
 		# list only files within a directory and ignore hidden files that begin with '.'
 		self.listNoHidden = lambda path : [entity for entity in listdir(path) if isfile(join(path, entity)) and not entity.startswith('.')]
@@ -33,8 +71,37 @@ class ReadData():
 		Process the flow rate dataframe
 	'''
 	def processFrame(self, df):
-		#TODO process data
-		pass
+
+		currNode = None
+		prevVal = 0.
+		
+		for idx, val in df['FlowRate'].iteritems():
+
+			# new node found
+			if currNode == None and val >= self.THRESHOLD:
+
+				currNode = FlowNode()
+				currNode.setStartIdx(idx)
+
+				prevVal = val
+
+			# currently within a node
+			elif currNode != None:
+
+				# node still active
+				if val >= self.THRESHOLD:
+					currNode.addData(val)
+					prevVal = val
+
+				# missing data
+				elif val == 0. and prevVal != val:
+					currNode.countZero()
+
+				# node inactive
+				else:
+					self.data.append(currNode.getData())
+					currNode = None
+					prevVal = val
 
 
 	'''
