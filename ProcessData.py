@@ -1,6 +1,6 @@
 '''
 	Filename: ProcessData.py
-	Author: Kyle Bannerman
+	Author: Kyle Bannerman & Nate Roblin (add-ons!)
 	Date Created: 03/23/2021
 	Date of Last Edit: 03/24/2021
 	File Purpose: processing data from spirometer
@@ -131,21 +131,26 @@ class ReadData():
 
 			if len(self.stats) == 0:
 				self.stats.append([idx * self.STEP, self.calcArea(node), max(node),
-								   len(node) * self.STEP, 0.])
+								   len(node) * self.STEP, 0., self.calcArea(node)])
 			else:
 				self.stats.append([idx * self.STEP, self.calcArea(node), max(node),
 								   len(node) * self.STEP, 
-								   idx * self.STEP - self.stats[-1][0]])
-
+								   idx * self.STEP - self.stats[-1][0], self.calcArea(node) + self.stats[len(self.stats)-1][5]])
+			'''
+    			TotalArea column records cumulative total from each node
+			'''
 		self.stats = pd.DataFrame(data=self.stats, 
-								  columns=['StartTime', 'Volume', 'PeakFlowRate', 'TimeElapsed', 'TimeBetweenFlow'])
+								  columns=['StartTime', 'Volume', 'PeakFlowRate', 'TimeElapsed', 'TimeBetweenFlow', 'TotalVolume'])
 
 
 	'''
 		Print specific stat
 	'''
 	def printStat(self, statStr):
-		print('%s:\n\tMean: %1.5f\tSTD: %1.5f' % (statStr, self.stats[statStr.replace(' ', '')].mean(), 
+		if statStr == 'Total Volume':
+			print('%s:\n\t%1.5f' % (statStr, self.stats[statStr.replace(' ', '')].max()))
+		else:
+			print('%s:\n\tMean: %1.5f\tSTD: %1.5f' % (statStr, self.stats[statStr.replace(' ', '')].mean(), 
 												  self.stats[statStr.replace(' ', '')].std()))
 
 	'''
@@ -161,6 +166,7 @@ class ReadData():
 		self.printStat('Peak Flow Rate')
 		self.printStat('Time Elapsed')
 		self.printStat('Time Between Flow')
+		self.printStat('Total Volume')
 
 
 	'''
