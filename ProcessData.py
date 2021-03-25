@@ -193,6 +193,8 @@ class ReadData():
 
 		for filename in self.listNoHidden(self.inPath):
 
+ 			self.data = list()
+			
 			if self.verbose:
 				print('Reading data from \'%s\'' % filename)
 
