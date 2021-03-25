@@ -135,17 +135,27 @@ class ReadData():
 		for idx, node in self.data:
 
 			if len(self.stats) == 0:
-				self.stats.append([idx * self.STEP, self.calcArea(node), max(node),
-								   len(node) * self.STEP, 0., self.calcArea(node)])
+				self.stats.append([idx * self.STEP, 
+								   self.calcArea(node), 
+								   max(node),
+								   len(node) * self.STEP,
+								   0.,
+								   self.calcArea(node),
+								   0.])
 			else:
-				self.stats.append([idx * self.STEP, self.calcArea(node), max(node),
+				self.stats.append([idx * self.STEP,
+								   self.calcArea(node),
+								   max(node),
 								   len(node) * self.STEP, 
-								   idx * self.STEP - self.stats[-1][0], self.calcArea(node) + self.stats[len(self.stats)-1][5]])
+								   idx * self.STEP - self.stats[-1][0],
+								   self.calcArea(node) + self.stats[-1][5],
+								   self.stats[-1][-1] + idx * self.STEP - self.stats[-1][0]])
 			'''
     			TotalArea column records cumulative total from each node
 			'''
 		self.stats = pd.DataFrame(data=self.stats, 
-								  columns=['StartTime', 'Volume', 'PeakFlowRate', 'TimeElapsed', 'TimeBetweenFlow', 'TotalVolume'])
+								  columns=['StartTime', 'Volume', 'PeakFlowRate', 'PulseTime', 
+								  		   'TimeBetweenFlow', 'TotalVolume', 'TimeElapsed'])
 
 
 	'''
@@ -169,9 +179,11 @@ class ReadData():
 
 		self.printStat('Volume')
 		self.printStat('Peak Flow Rate')
-		self.printStat('Time Elapsed')
+		self.printStat('Pulse Time')
 		self.printStat('Time Between Flow')
 		self.printStat('Total Volume')
+
+		print('Mean Flow Rate (L/min):\n\t%1.5f' % (self.stats.tail(1)['TotalVolume'] / self.stats.tail(1)['TimeElapsed'] * 60))
 
 
 	'''
