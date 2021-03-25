@@ -56,7 +56,7 @@ class ReadData():
 		self.verbose = verbose
 
 		# constants
-		self.THRESHOLD = 0.1
+		self.THRESHOLD = 0.5
 		self.STEP = 1 / 500
 
 		# accesible types
@@ -182,7 +182,7 @@ class ReadData():
 			df = pd.read_csv(join(self.inPath, filename), sep='\t')
 
 			# remove final three columns -- only use raw flow rate 
-			df.drop(columns=['0.000000.1', '0.000000.2', '0.000000.3'], inplace=True)
+			df.drop(columns=df.columns[1:], inplace=True)
 			df.columns = ['FlowRate']
 
 			if self.verbose:
