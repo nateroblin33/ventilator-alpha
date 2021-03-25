@@ -96,7 +96,12 @@ class ReadData():
 
 				# missing data
 				elif val == 0. and prevVal != val:
-					currNode.countZero()
+
+					# check for erroneous spikes:
+					if len(currNode.data) == 1:
+						currNode = None
+					else:
+						currNode.countZero()
 
 				# node inactive
 				else:
