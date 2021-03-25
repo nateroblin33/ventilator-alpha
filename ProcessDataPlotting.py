@@ -52,12 +52,13 @@ class FlowNode():
 class ReadData():
 
 
-	def __init__(self, inPath='./data', outPath='./output', verbose=True):
+	def __init__(self, inPath='./data', outPath='./output', verbose=True, plot=True):
 
 		# user input parameters
 		self.inPath = inPath
 		self.outPath = outPath
 		self.verbose = verbose
+		self.plot = plot
 
 		# constants
 		self.THRESHOLD = 0.08
@@ -235,7 +236,8 @@ class ReadData():
 
 			self.displayStats(filename)
 
-			self.plotData(filename)
+			if self.plot:
+				self.plotData(filename)
 
 
 
