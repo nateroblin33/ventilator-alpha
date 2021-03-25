@@ -2,7 +2,7 @@
 	Filename: ProcessData.py
 	Author: Kyle Bannerman & Nate Roblin (add-ons!)
 	Date Created: 03/23/2021
-	Date of Last Edit: 03/24/2021
+	Date of Last Edit: 03/25/2021
 	File Purpose: processing data from spirometer
 '''
 
@@ -151,26 +151,26 @@ class ReadData():
 								   self.calcArea(node) + self.stats[-1][5],
 								   self.stats[-1][-1] + idx * self.STEP - self.stats[-1][0]])
 			'''
-    			TotalArea column records cumulative total from each node
+				TotalArea column records cumulative total from each node
 			'''
 		self.stats = pd.DataFrame(data=self.stats, 
 								  columns=['StartTime', 'Volume', 'PeakFlowRate', 'PulseTime', 
-								  		   'TimeBetweenFlow', 'TotalVolume', 'TimeElapsed'])
+										   'TimeBetweenFlow', 'TotalVolume', 'TimeElapsed'])
 
 
 	'''
 		Plot all preprocessed nodes on one figure
 	'''
 	def plotData(self, filename):
-        
+		
 		plt.figure(filename)
 		plt.title(filename)
 		plt.xlabel('Time (s)')
 		plt.ylabel('Instantaneous Flow Rate (L/s)')
-        
+		
 		for idx, node in self.data:
 			plt.plot(np.arange(0,(len(node))*self.STEP,self.STEP).tolist(),node)
-        
+		
 		plt.show(filename)
 
 	'''
@@ -230,7 +230,7 @@ class ReadData():
 				print('done')
 
 			self.displayStats(filename)
-            
+
 			self.plotData(filename)
 
 
