@@ -49,13 +49,14 @@ class FlowNode():
 class ReadData():
 
 
-	def __init__(self, inPath='./data', outPath='./output', verbose=True, plot=False):
+	def __init__(self, inPath='./data', outPath='./output', verbose=True, plot=False, save=True):
 
 		# user input parameters
 		self.inPath = inPath
 		self.outPath = outPath
 		self.verbose = verbose
 		self.plot = plot
+		self.save = save
 
 		# constants
 		self.THRESHOLD = 0.08
@@ -244,6 +245,9 @@ class ReadData():
 
 			if self.plot:
 				self.plotData(filename)
+
+			if self.save:
+				self.stats.to_csv(join(self.outPath, filename[:filename.index('.data')] + 'output.csv'))
 
 
 
