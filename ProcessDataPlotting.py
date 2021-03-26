@@ -2,7 +2,7 @@
 	Filename: ProcessData.py
 	Author: Kyle Bannerman & Nate Roblin (add-ons!)
 	Date Created: 03/23/2021
-	Date of Last Edit: 03/25/2021
+	Date of Last Edit: 03/26/2021
 	File Purpose: processing data from spirometer
 '''
 
@@ -49,7 +49,7 @@ class FlowNode():
 class ReadData():
 
 
-	def __init__(self, inPath='./data', outPath='./output', verbose=True, plot=True):
+	def __init__(self, inPath='./data', outPath='./output', verbose=True, plot=False):
 
 		# user input parameters
 		self.inPath = inPath
@@ -107,7 +107,8 @@ class ReadData():
 
 				# node inactive
 				else:
-					self.data.append((currNode.getStartIdx(), currNode.getData()))
+					if max(currNode.data) >= 0.1:
+						self.data.append((currNode.getStartIdx(), currNode.getData()))
 					currNode = None
 					prevVal = val
 
@@ -152,12 +153,20 @@ class ReadData():
 								   idx * self.STEP - self.stats[-1][0],
 								   self.calcArea(node) + self.stats[-1][5],
 								   self.stats[-1][-1] + idx * self.STEP - self.stats[-1][0]])
-			'''
-				TotalArea column records cumulative total from each node
-			'''
+		
+		# TotalArea column records cumulative total from each node
 		self.stats = pd.DataFrame(data=self.stats, 
 								  columns=['StartTime', 'Volume', 'PeakFlowRate', 'PulseTime', 
 										   'TimeBetweenFlow', 'TotalVolume', 'TimeElapsed'])
+
+		# remove nodes that have a large time gap between (2 times the standard deviation)
+		timeList = self.stats['TimeBetweenFlow'].tolist()
+		idx = timeList.index(max(timeList))
+		if max(timeList) - sum(timeList[1:]) / len(timeList[1:]) > 2 * self.stats.iloc[1:]['TimeBetweenFlow'].std():
+			del timeList[idx]
+			for i in range(idx-1,-1,-1):
+				self.stats.drop(self.stats.index[i], inplace=True, axis=0)
+			self.stats.iloc[0]['TimeBetweenFlow'] = np.nan
 
 
 	'''
