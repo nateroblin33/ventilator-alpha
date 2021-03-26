@@ -1,5 +1,5 @@
 '''
-	Filename: ProcessData.py
+	Filename: ProcessDataPlotting.py
 	Author: Kyle Bannerman & Nate Roblin (add-ons!)
 	Date Created: 03/23/2021
 	Date of Last Edit: 03/26/2021
@@ -107,8 +107,8 @@ class ReadData():
 						currNode.countZero()
 
 				# node inactive
-				else:
-					if max(currNode.data) >= 0.1:
+				elif currNode.data != []:
+					if max(currNode.data) >= 0.15:
 						self.data.append((currNode.getStartIdx(), currNode.getData()))
 					currNode = None
 					prevVal = val
@@ -163,7 +163,7 @@ class ReadData():
 		# remove nodes that have a large time gap between (2 times the standard deviation)
 		timeList = self.stats['TimeBetweenFlow'].tolist()
 		idx = timeList.index(max(timeList))
-		if max(timeList) - sum(timeList[1:]) / len(timeList[1:]) > 2 * self.stats.iloc[1:]['TimeBetweenFlow'].std():
+		if max(timeList) - sum(timeList[1:]) / len(timeList[1:]) > 3 * self.stats.iloc[1:]['TimeBetweenFlow'].std():
 			del timeList[idx]
 			for i in range(idx-1,-1,-1):
 				self.stats.drop(self.stats.index[i], inplace=True, axis=0)
@@ -181,6 +181,10 @@ class ReadData():
 		plt.ylabel('Instantaneous Flow Rate (L/s)')
 		
 		for idx, node in self.data:
+			
+			# Uncomment to see individual nodes
+			# plt.figure()
+			
 			plt.plot(np.arange(0,(len(node))*self.STEP,self.STEP).tolist(),node)
 		
 		plt.show(filename)
