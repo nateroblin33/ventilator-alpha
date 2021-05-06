@@ -16,7 +16,7 @@ float convert_pressure(int v)
   float offset = 2.6103;
   float slope = 0.0827;
   
-  return v * adc_mv - offset;
+  return v * slope - offset;
 }
 
 
