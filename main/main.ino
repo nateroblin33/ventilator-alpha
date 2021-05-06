@@ -12,6 +12,7 @@
 #include "Buttons.h"
 #include "LEDs.h"
 #include "LCDScreen.h"
+#include "MotorControl.h"
 
 
 // user defined constants
@@ -73,6 +74,9 @@ void setup()
 
   // init LCD screen
   init_screen();
+
+  // set the max speed of the motor
+  set_max();
   
 }
 
@@ -91,11 +95,17 @@ void loop()
   
   // check for mode switch
   if (read_button(MODE_BUT_PIN)) switch_mode();
-
+  
   // read potentiometer
   float pot_val = analogRead(POT_PIN);
 
   // write to LCD screen
   write_pressure_vals(1.0, 1.1);
+
+  // move motor forwards
+  run_mot_forward();
+
+  // move motor backwards
+  run_mot_backward();
 
 }
