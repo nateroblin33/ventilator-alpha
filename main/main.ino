@@ -2,7 +2,7 @@
  * Filename: main.ino
  * Author: Kyle Bannerman
  * Date Created: 02/19/2021
- * Date of Last Edit: 02/23/2021
+ * Date of Last Edit: 05/06/2021
  * File Purpose: main controller of arduino
  */
 
@@ -19,19 +19,52 @@
 #define PRESSURE_MIN 0
 
 
+// RGB quantifiers for the LEDs
+int top_RGB[3] = {255, 0, 0};
+int bot_RGB[3] = {255, 0, 0};
+
+
+// mode and default setting selected
+int mode_sel = 0;
+int def_sel = 0;
+
+
+// switch the operating mode
+void switch_mode()
+{
+  mode_sel = ~mode_sel;
+    
+  // update LED indicator if switch occurs
+  if (mode_sel == 0) 
+  {
+    top_RGB[0] = 255;
+    top_RGB[1] = 0;
+    top_RGB[2] = 0;
+  }
+  else
+  {
+    top_RGB[0] = 0;
+    top_RGB[1] = 0;
+    top_RGB[2] = 255;
+  }
+}
+
+
 // init main
 void setup() 
 {
-  
-  // init pressure alert RGB LED pins
-  pinMode(PRESS_R_PIN, OUTPUT);
-  pinMode(PRESS_G_PIN, OUTPUT);
-  pinMode(PRESS_B_PIN, OUTPUT);
 
-  // init battery alert RGB LED pins
-  pinMode(BATT_R_PIN, OUTPUT);
-  pinMode(BATT_G_PIN, OUTPUT);
-  pinMode(BATT_B_PIN, OUTPUT);
+  Serial.begin(9600);
+  
+  // init bottom RGB LED pins
+  pinMode(BOT_R_PIN, OUTPUT);
+  pinMode(BOT_G_PIN, OUTPUT);
+  pinMode(BOT_B_PIN, OUTPUT);
+
+  // init top RGB LED pins
+  pinMode(TOP_R_PIN, OUTPUT);
+  pinMode(TOP_G_PIN, OUTPUT);
+  pinMode(TOP_B_PIN, OUTPUT);
 
   // init default setting button pins
   pinMode(DEF0_BUT_PIN, INPUT);
@@ -40,32 +73,29 @@ void setup()
 
   // init LCD screen
   init_screen();
+  
 }
 
 
+// operation loop
 void loop() 
 {
-    
-  // read in pressure sensor values
-  float input_pressure = read_pressure(PRESS_I_PIN);
-  float output_pressure = read_pressure(PRESS_O_PIN);
-  
-  // adjust pressure warning LED depending on pressure level
-  if (input_pressure > PRESSURE_MAX || input_pressure < PRESSURE_MIN) 
-    write_RGB(PRESS_R_PIN, PRESS_G_PIN, PRESS_B_PIN, 255, 0, 0); // red if an issue
-  else
-    write_RGB(PRESS_R_PIN, PRESS_G_PIN, PRESS_B_PIN, 0, 255, 0); // green if no issues
-
-  // write to battery status LEDs
-  write_RGB(BATT_R_PIN, BATT_G_PIN, BATT_B_PIN, 0, 255, 0);
+  // write to the LEDs
+  write_RGB(TOP_R_PIN, TOP_G_PIN, TOP_B_PIN, top_RGB);
+  write_RGB(BOT_R_PIN, BOT_G_PIN, BOT_B_PIN, bot_RGB);
 
   // check for default setting button pressure
-  int default_selected = -1;
-  if (read_button(DEF0_BUT_PIN)) default_selected = 0;
-  else if (read_button(DEF1_BUT_PIN)) default_selected = 1;
-  else if (read_button(DEF2_BUT_PIN)) default_selected = 2;
+  if (read_button(DEF0_BUT_PIN)) def_sel = 0;
+  else if (read_button(DEF1_BUT_PIN)) def_sel = 1;
+  else if (read_button(DEF2_BUT_PIN)) def_sel = 2;
+  
+  // check for mode switch
+  if (read_button(MODE_BUT_PIN)) switch_mode();
+
+  // read potentiometer
+  float pot_val = analogRead(POT_PIN);
 
   // write to LCD screen
-  clear_screen();
-  write_pressure_vals(input_pressure, output_pressure);
+  write_pressure_vals(1.0, 1.1);
+
 }
