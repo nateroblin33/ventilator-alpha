@@ -2,21 +2,21 @@
  * Filename: _init.h
  * Author: Kyle Bannerman
  * Date Created: 02/19/2021
- * Date of Last Edit: 04/30/2021
+ * Date of Last Edit: 05/06/2021
  * File Purpose: definition of constants
  */
 
 
-// pressure alert RGB LED pins (digital)
-#define PRESS_R_PIN 24
-#define PRESS_G_PIN 30
-#define PRESS_B_PIN 32
+// bottom RGB LED pins (digital)
+#define BOT_R_PIN 24
+#define BOT_G_PIN 30
+#define BOT_B_PIN 32
 
 
-// battery alert RGB LED pins (digital)
-#define BATT_R_PIN 22
-#define BATT_G_PIN 28
-#define BATT_B_PIN 26
+// top RGB LED pins (digital)
+#define TOP_R_PIN 22
+#define TOP_G_PIN 28
+#define TOP_B_PIN 26
 
 
 // default setting button pins (digital)
