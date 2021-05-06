@@ -28,6 +28,7 @@ int bot_RGB[3] = {255, 0, 0};
 // mode and default setting selected
 int mode_sel = 0;
 int def_sel = 0;
+int mot_speed = 350;
 
 
 // switch the operating mode
@@ -89,9 +90,21 @@ void loop()
   write_RGB(BOT_R_PIN, BOT_G_PIN, BOT_B_PIN, bot_RGB);
 
   // check for default setting button pressure
-  if (read_button(DEF0_BUT_PIN)) def_sel = 0;
-  else if (read_button(DEF1_BUT_PIN)) def_sel = 1;
-  else if (read_button(DEF2_BUT_PIN)) def_sel = 2;
+  if (read_button(DEF0_BUT_PIN)) 
+  {
+    def_sel = 0;
+    mot_speed = 350;
+  }
+  else if (read_button(DEF1_BUT_PIN))
+  {
+    def_sel = 1;
+    mot_speed = 400;
+  }
+  else if (read_button(DEF2_BUT_PIN))
+  {
+    def_sel = 2;
+    mot_speed = 450;
+  }
   
   // check for mode switch
   if (read_button(MODE_BUT_PIN)) switch_mode();
@@ -101,11 +114,11 @@ void loop()
 
   // write to LCD screen
   write_pressure_vals(1.0, 1.1);
-
+  
   // move motor forwards
-  run_mot_forward();
+  run_mot_forward(mot_speed);
 
   // move motor backwards
-  run_mot_backward();
+  run_mot_backward(mot_speed);
 
 }
