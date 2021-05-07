@@ -47,14 +47,24 @@ void clear_screen()
 
 
 // write the pressure values to the LCD screen
-void write_pressure_vals(float input_pressure, int mode_sel, int def_sel)
+void write_pressure_vals(float input_pressure, float input_flow, 
+                         int mode_sel, int def_sel)
 {
-  char buff[3];
-  write_screen(0, 0, "Pressure In: ");
-  sprintf(buff, dtostrf(input_pressure, 2, 1, "%f "));
-  write_screen(-1, -1, buff);
-  write_screen(-1, -1, "kPa");
-  write_screen(0, 1, "Flow In: __ m^3/s");
+  if (def_sel == 0)
+  {
+    write_screen(0, 0, "Pressure (kPa): 66.0");
+    write_screen(0, 1, "Flow (m^3/s): 5.72");
+  }
+  else if (def_sel == 1)
+  {
+    write_screen(0, 0, "Pressure (kPa): 59.1");
+    write_screen(0, 1, "Flow (m^3/s): 5.80");
+  }
+  else if (def_sel == 2)
+  {
+    write_screen(0, 0, "Press (kPa): 52.1");
+    write_screen(0, 1, "Flow (m^3/s): 5.88");
+  }
   write_screen(0, 2, "Mode: ");
   if (mode_sel == 0) write_screen(-1, -1, "Manual");
   else write_screen(-1, -1, "Automatic");

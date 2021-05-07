@@ -19,4 +19,5 @@ void clear_screen();
 
 
 // write the pressure values to the LCD screen
-void write_pressure_vals(float input_pressure, int mode_sel, int def_sel);
+void write_pressure_vals(float input_pressure, float input_flow, 
+                         int mode_sel, int def_sel);
