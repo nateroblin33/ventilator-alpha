@@ -34,8 +34,8 @@ int mot_speed = 350;
 // switch the operating mode
 void switch_mode()
 {
-  mode_sel = ~mode_sel;
-    
+  mode_sel = mode_sel ^ 1;
+
   // update LED indicator if switch occurs
   if (mode_sel == 0) 
   {
@@ -109,16 +109,16 @@ void loop()
   // check for mode switch
   if (read_button(MODE_BUT_PIN)) switch_mode();
   
-  // read potentiometer
-  float pot_val = analogRead(POT_PIN);
+//  // read potentiometer
+//  float pot_val = analogRead(POT_PIN);
 
   // write to LCD screen
   write_pressure_vals(1.0, 1.1);
   
   // move motor forwards
-  run_mot_forward(mot_speed);
-
-  // move motor backwards
-  run_mot_backward(mot_speed);
+//  run_mot_forward(mot_speed);
+//
+//  // move motor backwards
+//  run_mot_backward(mot_speed);
 
 }
