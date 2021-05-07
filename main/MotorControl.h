@@ -8,7 +8,7 @@
 
 
 // set the max speed for the motor
-void set_Max();
+void set_max();
 
 
 // run motor in the forwards direction
