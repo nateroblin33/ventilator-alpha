@@ -49,7 +49,7 @@ class FlowNode():
 class ReadData():
 
 
-	def __init__(self, inPath='./data', outPath='./output', verbose=True, plot=False, save=True):
+	def __init__(self, inPath='./data', outPath='./output', verbose=True, plot=True, save=True):
 
 		# user input parameters
 		self.inPath = inPath
@@ -183,9 +183,13 @@ class ReadData():
 		for idx, node in self.data:
 			
 			# Uncomment to see individual nodes
-			# plt.figure()
+# 			plt.figure()
 			
 			plt.plot(np.arange(0,(len(node))*self.STEP,self.STEP).tolist(),node)
+		
+		
+		# Uncomment to save figures
+# 		plt.savefig(filename[:filename.index('.data')] + 'plot.png')
 		
 		plt.show(filename)
 
@@ -195,6 +199,9 @@ class ReadData():
 	def printStat(self, statStr):
 		if statStr == 'Total Volume':
 			print('%s:\n\t%1.5f' % (statStr, self.stats[statStr.replace(' ', '')].max()))
+		elif statStr == 'Time Between Flow':
+			print('%s:\n\tMean: %1.5f\tSTD: %1.5f' % (statStr, self.stats[statStr.replace(' ','')][1:len(self.stats[statStr.replace(' ','')])].mean(), 
+												  self.stats[statStr.replace(' ','')][1:len(self.stats[statStr.replace(' ','')])].std()))
 		else:
 			print('%s:\n\tMean: %1.5f\tSTD: %1.5f' % (statStr, self.stats[statStr.replace(' ', '')].mean(), 
 												  self.stats[statStr.replace(' ', '')].std()))
